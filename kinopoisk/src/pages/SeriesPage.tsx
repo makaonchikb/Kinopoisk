@@ -1,39 +1,37 @@
-import { useEffect, useState } from "react";
-import { FiltersSidebar } from "../components/Filters";
-import { FilmsList } from "../components/FilmsList";
-import { Film } from "../types/types";
-import { mockFilms } from "../mocks/films";
+import React, { useEffect } from "react"
+import { useAppDispatch, useAppSelector } from "../redux/store"
+import { fetchSeries } from "../redux/movies-slice"
+import { FilmsList } from "../components/FilmsList"
+import { FiltersSidebar } from "../components/Filters"
 
-export function SeriesPage() {
-  const [series, setSeries] = useState<Film[]>([]);
-  const [loading, setLoading] = useState(true);
+export function SeriesPage(): React.ReactElement {
+    const dispatch = useAppDispatch()
+    const { series, loading, error } = useAppSelector(state => state.movies)
 
-  useEffect(() => {
-    setTimeout(() => {
-      setSeries(mockFilms);
-      setLoading(false);
-    }, 800);
-  }, []);
+    useEffect(() => {
+        if (series.length === 0) {
+            dispatch(fetchSeries())
+        }
+    }, [series.length, dispatch])
 
-  if (loading) {
     return (
-      <div className="flex gap-6 px-4 py-10">
-        <FiltersSidebar />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 flex-1">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="bg-white/5 rounded-lg h-80"></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+        <div className="flex gap-6 px-4 py-10">
 
-  return (
-    <div className="flex gap-6 px-4 py-10">
-      <FiltersSidebar />
-      <div className="flex-1">
-        <FilmsList films={series} />
-      </div>
-    </div>
-  );
+            <div className="w-64 sticky top-20 h-fit">
+                <FiltersSidebar />
+            </div>
+
+            <div className="flex-1">
+                <h1 className="text-2xl font-semibold text-white mb-6">
+                    Сериалы
+                </h1>
+
+                <FilmsList 
+                    films={series} 
+                    loading={loading} 
+                    error={error} 
+                />
+            </div>
+        </div>
+    )
 }

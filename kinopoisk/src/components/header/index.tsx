@@ -15,7 +15,7 @@ export function Header(): React.ReactElement {
     };
 
     return (
-        <header>
+        <header className="sticky top-0 z-50 bg-neutral-900/80 backdrop-blur border-b border-white/10">
             <div className="min-h-full">
                 <nav className="bg-neutral-950/90">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

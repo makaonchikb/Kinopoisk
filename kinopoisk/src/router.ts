@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router'
 import { Test } from './pages/test';
 import { Layout } from './components/Layout';
 import { MoviePage } from './pages/MoviePage';
-import { FavoritesPage } from './pages/Favorite';
+import { FavoriteMovies } from './pages/FavoriteMoviesPage';
 import { SeriesPage } from './pages/SeriesPage';
 import { CollectionsPage } from './pages/CollectionsPage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -18,7 +18,7 @@ const routes: RouteObject[] = [
       },
       {
         path: '/favorites',
-        Component: FavoritesPage
+        Component: FavoriteMovies
       },
       {
         path: '/series',

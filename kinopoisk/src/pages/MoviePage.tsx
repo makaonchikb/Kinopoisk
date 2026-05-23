@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FilmsList } from "../components/FilmsList";
-import { Film } from "../types/types";
-import { mockFilms } from "../mocks/films";
 import { FiltersSidebar } from "../components/Filters";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { fetchMovies } from "../redux/movies-slice";
 
 export function MoviePage() {
-  const [films, setFilms] = useState<Film[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { data: films, loading } = useAppSelector((state) => state.movies);
 
   useEffect(() => {
-    setTimeout(() => {
-      setFilms(mockFilms);
-      setLoading(false);
-    }, 800);
-  }, []);
+    dispatch(fetchMovies());
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -30,7 +27,9 @@ export function MoviePage() {
 
   return (
     <div className="flex gap-6 px-4 py-10">
-      <FiltersSidebar />
+      <div className="w-64 sticky top-20 h-fit">
+        <FiltersSidebar />
+      </div>
       <div className="flex-1">
         <FilmsList films={films} />
       </div>
