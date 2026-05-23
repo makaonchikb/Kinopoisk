@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
 import { moviesReducer } from './movies-slice'
+import { collectionsReducer } from './collections-slice'
 
 export const store = configureStore({
   reducer: {
     movies: moviesReducer,
+    collections: collectionsReducer,
   },
 })
 

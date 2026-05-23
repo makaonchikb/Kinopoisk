@@ -7,14 +7,19 @@ import { FavoriteMovies } from './pages/FavoriteMoviesPage';
 import { SeriesPage } from './pages/SeriesPage';
 import { CollectionsPage } from './pages/CollectionsPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { CollectionPage } from './pages/CollectionPage';
 
 const routes: RouteObject[] = [
-    {
+  {
     Component: Layout,
     children: [
       {
         path: '/',
         Component: MoviePage,
+      },
+      {
+        path: '/films',
+        Component: MoviePage
       },
       {
         path: '/favorites',
@@ -27,6 +32,10 @@ const routes: RouteObject[] = [
       {
         path: '/collections',
         Component: CollectionsPage
+      },
+      {
+        path: '/collections/:type/:page',
+        Component: CollectionPage
       },
       {
         path: '/profile',

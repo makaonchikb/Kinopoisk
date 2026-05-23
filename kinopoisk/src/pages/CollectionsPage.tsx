@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router";
 
-const collections = [
+export const collections = [
   { type: "TOP_POPULAR_ALL", title: "Популярное" },
   { type: "TOP_POPULAR_MOVIES", title: "Популярные фильмы" },
   { type: "TOP_250_MOVIES", title: "Топ 250 фильмов" },
@@ -24,13 +25,14 @@ export function CollectionsPage(): React.ReactElement {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {collections.map((item) => (
-          <div
+          <Link
             key={item.type}
+            to={`/collections/${item.type}/1`}
             className="bg-neutral-900/80 border border-white/10 rounded-lg p-6 cursor-pointer hover:bg-white/5 transition"
           >
             <div className="text-gray-200 text-lg font-medium">{item.title}</div>
             <div className="text-gray-500 text-sm mt-1">{item.type}</div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

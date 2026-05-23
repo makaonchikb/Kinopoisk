@@ -164,14 +164,14 @@ export const moviesSlice = createSlice({
         })
 
         builder.addCase(fetchMovieById.fulfilled, (state, action) => {
-            const movie = action.payload
+    const movie = action.payload
 
-            const exists = state.data.some(existingMovie => existingMovie.id === movie.id)
+    const exists = state.data.some(existingMovie => existingMovie.id === movie.id)
 
-            if (!exists) {
-                state.data.push(movie)
-            }
-        })
+    if (!exists) {
+        state.data.push(movie)
+    }
+})
 
     },
 })
