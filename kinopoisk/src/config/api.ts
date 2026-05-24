@@ -1,4 +1,4 @@
-export const baseUrl = 'https://kinopoiskapiunofficial.tech/api/v2.2'
+export const baseUrlKinopoisk = 'https://kinopoiskapiunofficial.tech/api/v2.2'
 
 export const API = {
   films: '/films',

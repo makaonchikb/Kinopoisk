@@ -8,6 +8,7 @@ import { SeriesPage } from './pages/SeriesPage';
 import { CollectionsPage } from './pages/CollectionsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { CollectionPage } from './pages/CollectionPage';
+import { SearchResultsPage } from './pages/SearchResultPage';
 
 const routes: RouteObject[] = [
   {
@@ -22,11 +23,19 @@ const routes: RouteObject[] = [
         Component: MoviePage
       },
       {
+        path: '/films/:page',
+        Component: MoviePage
+      },
+      {
         path: '/favorites',
         Component: FavoriteMovies
       },
       {
         path: '/series',
+        Component: SeriesPage
+      },
+      {
+        path: '/series/:page',
         Component: SeriesPage
       },
       {
@@ -40,6 +49,10 @@ const routes: RouteObject[] = [
       {
         path: '/profile',
         Component: ProfilePage
+      },
+      {
+        path: 'search/:query/:page',
+        Component: SearchResultsPage
       }
     ]
   },
