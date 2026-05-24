@@ -1,8 +1,10 @@
-export const baseUrlKinopoisk = 'https://kinopoiskapiunofficial.tech/api/v2.2'
+export const baseUrlKinopoisk = 'https://kinopoiskapiunofficial.tech'
 
 export const API = {
-  films: '/films',
-  filmsFilters: '/films/filters',
-  filmsTop: '/films/top',
-  filmsSearch: '/films?keyword=',
+  films: '/api/v2.2/films',
+  filmsFilters: '/api/v2.2/films/filters',
+  filmsTop: '/api/v2.2/films/top',
+  filmsSearch: '/api/v2.2/films',
+  staff: '/api/v1/staff',
+  similar: '/api/v2.2/films',
 }

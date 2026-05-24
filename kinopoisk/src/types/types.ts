@@ -28,6 +28,10 @@ export type MoviesState = {
   filteredMovies: Movie[]
   filteredTotalPages: number
   currentTotalPages: number
+  currentFilm: FilmItem | null
+  currentFilmActors: any[]
+  currentFilmImages: any[]
+  currentFilmSimilar: Object[]
 }
 
 export interface FilmsResponse {
@@ -49,6 +53,7 @@ export interface FilmItem {
   ratingImdb: number | null;
   genres: { genre: string }[];
   countries: { country: string }[];
+  description: string;
 }
 
 

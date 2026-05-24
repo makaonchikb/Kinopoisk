@@ -1,82 +1,147 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import { useAppDispatch, useAppSelector } from "../redux/store";
-import { fetchMovieById } from "../redux/movies-slice";
+import {
+  fetchMovieById,
+  fetchFilmActors,
+  fetchFilmImages,
+  fetchSimilarMovies,
+  clearCurrentFilm,
+  toggleFavoriteMovie
+} from "../redux/movies-slice";
+import ImageSlider from "../components/slider";
 
 export function FilmInfo(): React.ReactElement {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  const movie = useAppSelector((state) =>
-    state.movies.data.find((film) => film.id === Number(id))
-  );
+  const film = useAppSelector((state) => state.movies.currentFilm);
+  const actors = useAppSelector((state) => state.movies.currentFilmActors) ?? [];
+  const images = useAppSelector((state) => state.movies.currentFilmImages) ?? [];
+  const similar = useAppSelector((state) => state.movies.currentFilmSimilar) ?? [];
+  const favorite = useAppSelector((state) => state.movies.favorite);
 
   useEffect(() => {
-    if (!movie) {
-      dispatch(fetchMovieById(Number(id)));
-    }
-  }, [dispatch, id, movie]);
+    dispatch(clearCurrentFilm());
+    dispatch(fetchMovieById(Number(id)));
+    dispatch(fetchFilmActors(Number(id)));
+    dispatch(fetchFilmImages(Number(id)));
+    dispatch(fetchSimilarMovies(Number(id)));
+  }, [dispatch, id]);
 
-  if (!movie) {
+  if (!film) {
     return <div className="text-gray-300 p-6">Загрузка...</div>;
   }
 
+  const uniqueActors = Array.from(
+    new Map(actors.map((a) => [a.staffId, a])).values()
+  ).slice(0, 12);
+
+  const imagesToShow = images.slice(0, 12);
+  const similarToShow = similar.slice(0, 12);
+
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-10">
+    <div className="max-w-6xl mx-auto p-6 space-y-12">
 
-      {/* Верхний блок */}
       <div className="flex flex-col md:flex-row gap-8">
-
         <img
-          src={movie.poster}
-          alt={movie.title}
+          src={film.posterUrl}
+          alt={film.nameRu || film.nameEn || film.nameOriginal || ""}
           className="w-72 h-[420px] object-cover rounded-lg shadow-lg"
         />
 
         <div className="space-y-4 flex-1">
-
           <h1 className="text-4xl font-bold text-gray-200">
-            {movie.nameRu || movie.nameEn || movie.nameOriginal}
+            {film.nameRu || film.nameEn || film.nameOriginal}
           </h1>
 
-          {movie.nameOriginal && movie.nameOriginal !== movie.nameRu && (
-            <div className="text-gray-400 italic">{movie.nameOriginal}</div>
-          )}
+          <button
+            onClick={() => dispatch(toggleFavoriteMovie(film.kinopoiskId))}
+            className="px-4 py-2 rounded-lg bg-yellow-500 text-black font-bold"
+          >
+            {favorite.includes(film.kinopoiskId)
+              ? "Удалить из избранного"
+              : "В избранное"}
+          </button>
 
           <div className="text-gray-300 text-lg">
-            <span className="text-gray-400">Год:</span> {movie.year ?? "—"}
+            <span className="text-gray-400">Год:</span> {film.year ?? "—"}
           </div>
 
           <div className="text-gray-300 text-lg">
-            <span className="text-gray-400">Тип:</span> {movie.type}
+            <span className="text-gray-400">Тип:</span> {film.type}
           </div>
 
           <div className="text-gray-300 text-lg">
-            <span className="text-gray-400">Рейтинг KinoPoisk</span>{" "}
-            {movie.ratingKinopoisk ?? ":"}
+            <span className="text-gray-400">Рейтинг KP:</span>{" "}
+            {film.ratingKinopoisk ?? "—"}
           </div>
 
           <div className="text-gray-300 text-lg">
             <span className="text-gray-400">IMDb:</span>{" "}
-            {movie.ratingImdb ?? ":"}
+            {film.ratingImdb ?? "—"}
           </div>
 
-          <div className="text-gray-300 text-lg">
-            <span className="text-gray-400">Жанры:</span>{" "}
-            {movie.genres.map((g) => g.genre).join(", ")}
-          </div>
-
-          <div className="text-gray-300 text-lg">
-            <span className="text-gray-400">Страны:</span>{" "}
-            {movie.countries.map((c) => c.country).join(", ")}
-          </div>
-
+          {film.description && (
+            <div className="text-gray-300 text-lg leading-relaxed">
+              {film.description}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Описание — если появится в API */}
-      <div className="text-gray-400 text-center">
-        Дополнительная информация о фильме появится, когда мы расширим API.
+      <div className="space-y-4">
+        <h2 className="text-2xl text-gray-200 font-bold">Актёры</h2>
+
+        {uniqueActors.length === 0 ? (
+          <div className="text-gray-400 text-lg">Информация об актёрах отсутствует.</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {uniqueActors.map((actor) => (
+              <div key={actor.staffId} className="text-center">
+                <img
+                  src={actor.posterUrl}
+                  className="w-32 h-40 object-cover rounded-lg mx-auto"
+                />
+                <div className="text-gray-200 mt-2">
+                  {actor.nameRu || actor.nameEn}
+                </div>
+                <div className="text-gray-400 text-sm">{actor.professionText}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl text-gray-200 font-bold">Кадры</h2>
+        <ImageSlider images={imagesToShow} />
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl text-gray-200 font-bold">Похожие фильмы</h2>
+
+        {similarToShow.length === 0 ? (
+          <div className="text-gray-400 text-lg">Похожие фильмы не найдены.</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {similarToShow.map((movie) => (
+              <Link
+                key={movie.filmId}
+                to={`/film/${movie.filmId}`}
+                className="text-center cursor-pointer block"
+              >
+                <img
+                  src={movie.posterUrlPreview}
+                  className="w-32 h-40 object-cover rounded-lg mx-auto"
+                />
+                <div className="text-gray-200 mt-2">
+                  {movie.nameRu || movie.nameEn}
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
     </div>

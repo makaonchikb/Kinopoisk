@@ -22,10 +22,10 @@ export async function requestFilm(id: number): Promise<FilmItem> {
 }
 
 export async function requestSearchMovies(query: string, page: number) {
-  const response = await get(API.films, {
+  const response = await get(API.filmsSearch, {
     params: {
       keyword: query,
-      page: page
+      page
     }
   });
   return response.data;
@@ -61,4 +61,40 @@ export async function requestFilteredMovies(
   });
 
   return response.data;
+}
+
+export async function requestFilmImages(id: number) {
+  const types = ["STILL", "SHOOTING", "POSTER", "FAN_ART"];
+
+  const requests = types.map(type =>
+    get(`/api/v2.2/films/${id}/images`, { params: { type } })
+      .then(res => res.data.items ?? [])
+      .catch(() => [])
+  );
+
+  const results = await Promise.all(requests);
+
+  const merged = results.flat();
+
+  const unique = Array.from(
+    new Map(merged.map(img => [img.imageUrl, img])).values()
+  );
+
+  return unique.map(img => ({
+    imageUrl: img.previewUrl || img.imageUrl
+  }));
+}
+
+
+
+export async function requestFilmStaff(filmId: number) {
+  const response = await get(API.staff, {
+    params: { filmId }
+  });
+  return response.data;
+}
+
+export async function requestSimilarMovies(id: number) {
+  const response = await get(`/api/v2.2/films/${id}/similars`);
+  return response.data.items ?? [];
 }
