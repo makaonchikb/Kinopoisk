@@ -1,5 +1,6 @@
 import type { Movie } from "../../types/types"
 import { FavoriteButton } from "../FavoriteButton";
+import { Link } from "react-router";
 
 type FilmsListProps = {
   films: Movie[];
@@ -9,7 +10,8 @@ export function FilmsList({ films }: FilmsListProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
       {films.map((film) => (
-        <div
+        <Link
+          to={`/film/${film.id}`}
           key={film.id}
           className="relative bg-white/5 rounded-lg overflow-hidden hover:scale-[1.02] transition"
         >
@@ -34,7 +36,7 @@ export function FilmsList({ films }: FilmsListProps) {
               {film.genres.join(", ")}
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   )

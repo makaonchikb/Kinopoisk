@@ -23,11 +23,6 @@ export function FavoriteMovies(): React.ReactElement {
 
     return (
         <div className="flex gap-6 px-4 py-10">
-
-            <div className="w-64 sticky top-20 h-fit">
-                <FiltersSidebar />
-            </div>
-
             <div className="flex-1">
                 {favoriteMovies.length === 0 ? (
                     <div className="text-gray-400 text-lg">

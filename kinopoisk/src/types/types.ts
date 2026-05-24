@@ -23,8 +23,11 @@ export type MoviesState = {
   seriesTotalPages: number
   favorite: number[]
   series: Movie[]
-  searchResults: Movie[],
-  searchTotalPages: number,
+  searchResults: Movie[]
+  searchTotalPages: number
+  filteredMovies: Movie[]
+  filteredTotalPages: number
+  currentTotalPages: number
 }
 
 export interface FilmsResponse {

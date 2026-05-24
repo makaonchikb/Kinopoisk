@@ -9,6 +9,8 @@ import { CollectionsPage } from './pages/CollectionsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { CollectionPage } from './pages/CollectionPage';
 import { SearchResultsPage } from './pages/SearchResultPage';
+import { FilteredFilmsPage } from './pages/FilteredFilmsPage';
+import { FilmInfo } from './pages/FilmInfoPage';
 
 const routes: RouteObject[] = [
   {
@@ -21,6 +23,10 @@ const routes: RouteObject[] = [
       {
         path: '/films',
         Component: MoviePage
+      },
+      {
+        path: '/films/filters/:page',
+        Component: FilteredFilmsPage
       },
       {
         path: '/films/:page',
@@ -53,6 +59,10 @@ const routes: RouteObject[] = [
       {
         path: 'search/:query/:page',
         Component: SearchResultsPage
+      },
+      {
+        path: 'film/:id',
+        Component: FilmInfo
       }
     ]
   },
