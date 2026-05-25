@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { moviesReducer } from './movies-slice'
 import { collectionsReducer } from './collections-slice'
 import { moviesFilterReducer } from './filters-slice'
+import { authReducer } from './auth-slice'
 
 export const store = configureStore({
   reducer: {
     movies: moviesReducer,
     collections: collectionsReducer,
-    filters: moviesFilterReducer
+    filters: moviesFilterReducer,
+    auth: authReducer
   },
 })
 

@@ -31,7 +31,7 @@ export type MoviesState = {
   currentFilm: FilmItem | null
   currentFilmActors: any[]
   currentFilmImages: any[]
-  currentFilmSimilar: Object[]
+  currentFilmSimilar: any[]
 }
 
 export interface FilmsResponse {
@@ -56,4 +56,69 @@ export interface FilmItem {
   description: string;
 }
 
+export interface FormSignUpValues {
+  username: string,
+  email: string,
+  password: string,
+  confirmPassword: string
+}
 
+export interface FormSignInValues {
+  email: string,
+  password: string
+}
+
+export type SignInData = FormSignInValues
+
+export interface AuthState {
+  user: UserModel | null,
+  AboutUser: AboutUserData | null,
+  jwt: JwtModel | null,
+  isActivated: boolean,
+  loading: boolean,
+  error: boolean,
+}
+
+export interface UserModel {
+  id: number
+  username: string,
+  email: string,
+  course_group: number
+}
+
+export interface JwtModel {
+  access: string,
+  refresh: string,
+}
+
+export type SignUpData = {
+  username: string
+  email: string
+  password: string
+  course_group?: string
+}
+
+export interface ActivateData {
+  uid: string,
+  token: string
+}
+
+export interface AboutUserData {
+  username: string,
+  id: number,
+  email: string
+}
+
+export type FormFieldProps = {
+  id?: string,
+  label?: string,
+  type: string,
+  placeholder?: string,
+  className: string,
+  classNameForLabel?: string,
+  maxLength?: number,
+  max?: number | string,
+  min?: number | string,
+  step?: string,
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+}

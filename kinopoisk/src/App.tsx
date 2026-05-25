@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { store } from './redux/store'
 
 export function App(): React.ReactElement {
+  
   return (
     <>
       <Provider store={store}>

@@ -11,6 +11,10 @@ import { CollectionPage } from './pages/CollectionPage';
 import { SearchResultsPage } from './pages/SearchResultPage';
 import { FilteredFilmsPage } from './pages/FilteredFilmsPage';
 import { FilmInfo } from './pages/FilmInfoPage';
+import { SignInPage } from './pages/SignInPage';
+import { SignUpPage } from './pages/SignUpPage';
+import { ParseLinkPage } from './pages/ParseLinkPage';
+import { ActivationPage } from './pages/ActivationPage';
 
 const routes: RouteObject[] = [
   {
@@ -63,6 +67,22 @@ const routes: RouteObject[] = [
       {
         path: 'film/:id',
         Component: FilmInfo
+      },
+      {
+        path: '/signin',
+        Component: SignInPage
+      },
+      {
+        path: '/signup',
+        Component: SignUpPage
+      },
+      {
+        path: '/activate-link',
+        Component: ParseLinkPage
+      },
+      {
+        path: '/auth/activate/:uid/:token',
+        Component: ActivationPage
       }
     ]
   },

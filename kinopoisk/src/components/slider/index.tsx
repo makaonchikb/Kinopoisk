@@ -5,7 +5,7 @@ type SliderProps = {
   height?: string;
 };
 
-export default function ImageSlider({ images, height = "h-72" }: SliderProps) {
+export default function ImageSlider({ images, height = "h-72" }: SliderProps): React.ReactElement {
   const [index, setIndex] = useState(0);
 
   if (!images || images.length === 0) {
