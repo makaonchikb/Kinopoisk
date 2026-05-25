@@ -17,11 +17,11 @@ export function SearchResultsPage() {
     searchTotalPages,
     loading,
     error,
-  } = useAppSelector((state) => state.movies);
+  } = useAppSelector((state) => state.moviesList);
 
   useEffect(() => {
     if (query) {
-      dispatch(fetchSearchMovies({ query: query, page: pageNumber }));
+      dispatch(fetchSearchMovies({ query, page: pageNumber }));
     }
   }, [query, pageNumber, dispatch]);
 

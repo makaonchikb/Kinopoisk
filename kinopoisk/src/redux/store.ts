@@ -1,13 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch, useSelector } from 'react-redux'
-import { moviesReducer } from './movies-slice'
+import { moviesListReducer } from './movies-slice'
 import { collectionsReducer } from './collections-slice'
 import { moviesFilterReducer } from './filters-slice'
 import { authReducer } from './auth-slice'
+import { movieReducer } from './movie-slice'
+import { favoritesReducer } from './favorite-slice'
 
 export const store = configureStore({
   reducer: {
-    movies: moviesReducer,
+    moviesList: moviesListReducer,
+    movie: movieReducer,
+    favorites: favoritesReducer,
     collections: collectionsReducer,
     filters: moviesFilterReducer,
     auth: authReducer

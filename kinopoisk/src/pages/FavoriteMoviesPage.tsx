@@ -1,18 +1,24 @@
 import React, { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../redux/store"
-import { fetchMovieById } from "../redux/movies-slice"
+import { fetchFavoriteMovieById } from "../redux/favorite-slice"
 import { FilmsList } from "../components/FilmsList"
 
 export function FavoriteMovies(): React.ReactElement {
     const dispatch = useAppDispatch()
-    const { favorite, favoriteMovies, loading, error } = useAppSelector(state => state.movies)
+
+    const {
+        favorite,
+        favoriteMovies,
+        loading,
+        error
+    } = useAppSelector(state => state.favorites)
 
     useEffect(() => {
         favorite.forEach(movieId => {
             const exists = favoriteMovies.some(movie => movie.id === movieId)
 
             if (!exists) {
-                dispatch(fetchMovieById(movieId))
+                dispatch(fetchFavoriteMovieById(movieId))
             }
         })
     }, [favorite, favoriteMovies, dispatch])

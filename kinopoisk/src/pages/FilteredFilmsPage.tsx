@@ -14,7 +14,7 @@ export function FilteredFilmsPage(): React.ReactElement {
   const currentPageNumber = Number(page) || 1;
 
   const moviesFilterState = useAppSelector((state) => state.filters);
-  const moviesState = useAppSelector((state) => state.movies);
+  const moviesState = useAppSelector((state) => state.moviesList);
 
   useEffect(() => {
     dispatch(

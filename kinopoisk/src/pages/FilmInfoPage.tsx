@@ -6,20 +6,20 @@ import {
   fetchFilmActors,
   fetchFilmImages,
   fetchSimilarMovies,
-  clearCurrentFilm,
-  toggleFavoriteMovie
-} from "../redux/movies-slice";
+  clearCurrentFilm
+} from "../redux/movie-slice";
+import { toggleFavoriteMovie } from "../redux/favorite-slice";
 import ImageSlider from "../components/slider";
 
 export function FilmInfo(): React.ReactElement {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  const film = useAppSelector((state) => state.movies.currentFilm);
-  const actors = useAppSelector((state) => state.movies.currentFilmActors) ?? [];
-  const images = useAppSelector((state) => state.movies.currentFilmImages) ?? [];
-  const similar = useAppSelector((state) => state.movies.currentFilmSimilar) ?? [];
-  const favorite = useAppSelector((state) => state.movies.favorite);
+  const film = useAppSelector((state) => state.movie.currentFilm);
+  const actors = useAppSelector((state) => state.movie.currentFilmActors) ?? [];
+  const images = useAppSelector((state) => state.movie.currentFilmImages) ?? [];
+  const similar = useAppSelector((state) => state.movie.currentFilmSimilar) ?? [];
+  const favorite = useAppSelector((state) => state.favorites.favorite);
 
   useEffect(() => {
     dispatch(clearCurrentFilm());
@@ -42,7 +42,6 @@ export function FilmInfo(): React.ReactElement {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-12">
-
       <div className="flex flex-col md:flex-row gap-8">
         <img
           src={film.posterUrl}
@@ -143,7 +142,6 @@ export function FilmInfo(): React.ReactElement {
           </div>
         )}
       </div>
-
     </div>
   );
 }

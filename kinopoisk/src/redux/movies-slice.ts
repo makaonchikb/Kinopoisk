@@ -2,14 +2,10 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   requestMovies,
   requestSeries,
-  requestFilm,
   requestSearchMovies,
   requestFilteredMovies,
-  requestFilmImages,
-  requestFilmStaff,
-  requestSimilarMovies,
 } from "../services/films";
-import type { MoviesState } from "../types/types";
+import type { MoviesListState } from "../types/types";
 
 const mapFilm = (film: any) => ({
   id: film.kinopoiskId,
@@ -22,7 +18,7 @@ const mapFilm = (film: any) => ({
 });
 
 export const fetchMovies = createAsyncThunk(
-  "movies/fetchMovies",
+  "moviesList/fetchMovies",
   async (page: number, { rejectWithValue }) => {
     try {
       const data = await requestMovies(page);
@@ -42,7 +38,7 @@ export const fetchMovies = createAsyncThunk(
 );
 
 export const fetchSeries = createAsyncThunk(
-  "movies/fetchSeries",
+  "moviesList/fetchSeries",
   async (page: number, { rejectWithValue }) => {
     try {
       const data = await requestSeries(page);
@@ -61,19 +57,8 @@ export const fetchSeries = createAsyncThunk(
   }
 );
 
-export const fetchMovieById = createAsyncThunk(
-  "movies/fetchMovieById",
-  async (id: number, { rejectWithValue }) => {
-    try {
-      return await requestFilm(id);
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
-
 export const fetchSearchMovies = createAsyncThunk(
-  "movies/fetchSearchMovies",
+  "moviesList/fetchSearchMovies",
   async (payload: { query: string; page: number }, { rejectWithValue }) => {
     try {
       const data = await requestSearchMovies(payload.query, payload.page);
@@ -93,7 +78,7 @@ export const fetchSearchMovies = createAsyncThunk(
 );
 
 export const fetchFilteredMovies = createAsyncThunk(
-  "movies/fetchFilteredMovies",
+  "moviesList/fetchFilteredMovies",
   async (payload, { rejectWithValue }) => {
     try {
       const data = await requestFilteredMovies(payload);
@@ -112,28 +97,7 @@ export const fetchFilteredMovies = createAsyncThunk(
   }
 );
 
-export const fetchFilmActors = createAsyncThunk(
-  "movies/fetchFilmActors",
-  async (id: number) => {
-    return await requestFilmStaff(id);
-  }
-);
-
-export const fetchFilmImages = createAsyncThunk(
-  "movies/fetchFilmImages",
-  async (id: number) => {
-    return await requestFilmImages(id);
-  }
-);
-
-export const fetchSimilarMovies = createAsyncThunk(
-  "movies/fetchSimilarMovies",
-  async (id: number) => {
-    return await requestSimilarMovies(id);
-  }
-);
-
-const initialState: MoviesState = {
+const initialState: MoviesListState = {
   data: [],
   series: [],
   loading: false,
@@ -142,45 +106,18 @@ const initialState: MoviesState = {
   seriesTotalPages: 0,
   searchResults: [],
   searchTotalPages: 0,
-  favorite: JSON.parse(localStorage.getItem("favoriteMovies") || "[]"),
-  favoriteMovies: [],
   filteredMovies: [],
   filteredTotalPages: 0,
-  currentFilm: null,
-  currentFilmActors: [],
-  currentFilmImages: [],
-  currentFilmSimilar: [],
 };
 
-export const moviesSlice = createSlice({
-  name: "movies",
+export const moviesListSlice = createSlice({
+  name: "moviesList",
   initialState,
   reducers: {
     setTotalPages: (state, action: PayloadAction<number>) => {
       state.totalPages = action.payload;
     },
-
-    clearCurrentFilm: (state) => {
-      state.currentFilm = null;
-      state.currentFilmActors = [];
-      state.currentFilmImages = [];
-      state.currentFilmSimilar = [];
-    },
-
-    toggleFavoriteMovie: (state, action: PayloadAction<number>) => {
-      const id = action.payload;
-
-      if (state.favorite.includes(id)) {
-        state.favorite = state.favorite.filter((movieId) => movieId !== id);
-        state.favoriteMovies = state.favoriteMovies.filter((m) => m.id !== id);
-      } else {
-        state.favorite.push(id);
-      }
-
-      localStorage.setItem("favoriteMovies", JSON.stringify(state.favorite));
-    },
   },
-
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.pending, (state) => {
       state.loading = true;
@@ -204,26 +141,6 @@ export const moviesSlice = createSlice({
       state.loading = false;
       state.error = false;
     });
-
-    builder.addCase(fetchMovieById.fulfilled, (state, action) => {
-      const film = action.payload;
-
-      const mapped = {
-        id: film.kinopoiskId,
-        title: film.nameRu || film.nameEn || "",
-        poster: film.posterUrlPreview || film.posterUrl || "",
-        year: film.year ?? 0,
-        rating: film.ratingKinopoisk ?? null,
-        genres: film.genres?.map(g => g.genre) ?? [],
-        countries: film.countries?.map(c => c.country) ?? [],
-      };
-
-      const exists = state.favoriteMovies.some(m => m.id === mapped.id);
-      if (!exists) state.favoriteMovies.push(mapped);
-
-      state.currentFilm = film; 
-    });
-
 
     builder.addCase(fetchSearchMovies.pending, (state) => {
       state.loading = true;
@@ -256,22 +173,8 @@ export const moviesSlice = createSlice({
       state.loading = false;
       state.error = true;
     });
-
-    builder.addCase(fetchFilmActors.fulfilled, (state, action) => {
-      state.currentFilmActors = action.payload;
-    });
-
-    builder.addCase(fetchFilmImages.fulfilled, (state, action) => {
-      state.currentFilmImages = action.payload;
-    });
-
-    builder.addCase(fetchSimilarMovies.fulfilled, (state, action) => {
-      state.currentFilmSimilar = action.payload;
-    });
   },
 });
 
-export const { toggleFavoriteMovie, setTotalPages, clearCurrentFilm } =
-  moviesSlice.actions;
-
-export const moviesReducer = moviesSlice.reducer;
+export const { setTotalPages } = moviesListSlice.actions;
+export const moviesListReducer = moviesListSlice.reducer;

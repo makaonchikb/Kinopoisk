@@ -14,7 +14,7 @@ export function MoviePage() {
   const dispatch = useAppDispatch();
 
   const { data: films, loading, totalPages } = useAppSelector(
-    (state) => state.movies
+    (state) => state.moviesList
   );
 
   useEffect(() => {
@@ -42,12 +42,15 @@ export function MoviePage() {
 
       <div className="flex-1">
         <h1 className="text-2xl font-semibold text-gray-200 mb-6">Главная</h1>
+
         <Pagination
           currentPage={pageNumber}
           totalPages={totalPages}
           onPageChange={(page) => navigate(`/films/${page}`)}
         />
+
         <div className="mb-6"></div>
+
         <FilmsList films={films} />
 
         <Pagination
