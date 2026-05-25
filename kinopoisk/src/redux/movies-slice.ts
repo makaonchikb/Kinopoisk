@@ -11,6 +11,16 @@ import {
 } from "../services/films";
 import type { MoviesState } from "../types/types";
 
+const mapFilm = (film: any) => ({
+  id: film.kinopoiskId,
+  title: film.nameRu || film.nameEn || "",
+  poster: film.posterUrlPreview || film.posterUrl || "",
+  year: film.year ?? 0,
+  rating: film.ratingKinopoisk ?? null,
+  genres: film.genres?.map((g: any) => g.genre) ?? [],
+  countries: film.countries?.map((c: any) => c.country) ?? [],
+});
+
 export const fetchMovies = createAsyncThunk(
   "movies/fetchMovies",
   async (page: number, { rejectWithValue }) => {
@@ -18,15 +28,7 @@ export const fetchMovies = createAsyncThunk(
       const data = await requestMovies(page);
 
       const mapped = data.items
-        .map((film) => ({
-          id: film.kinopoiskId,
-          title: film.nameRu || film.nameEn || "",
-          poster: film.posterUrlPreview || "",
-          year: film.year ?? 0,
-          rating: film.ratingKinopoisk ?? null,
-          genres: film.genres?.map((g) => g.genre) ?? [],
-          countries: film.countries?.map((c) => c.country) ?? [],
-        }))
+        .map(mapFilm)
         .filter((film) => film.title && film.poster);
 
       return {
@@ -46,15 +48,7 @@ export const fetchSeries = createAsyncThunk(
       const data = await requestSeries(page);
 
       const mapped = data.items
-        .map((film) => ({
-          id: film.kinopoiskId,
-          title: film.nameRu || film.nameEn || "",
-          poster: film.posterUrlPreview || "",
-          year: film.year ?? 0,
-          rating: film.ratingKinopoisk ?? null,
-          genres: film.genres?.map((g) => g.genre) ?? [],
-          countries: film.countries?.map((c) => c.country) ?? [],
-        }))
+        .map(mapFilm)
         .filter((film) => film.title && film.poster);
 
       return {
@@ -71,8 +65,7 @@ export const fetchMovieById = createAsyncThunk(
   "movies/fetchMovieById",
   async (id: number, { rejectWithValue }) => {
     try {
-      const film = await requestFilm(id);
-      return film;
+      return await requestFilm(id);
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -86,15 +79,7 @@ export const fetchSearchMovies = createAsyncThunk(
       const data = await requestSearchMovies(payload.query, payload.page);
 
       const mappedMovies = data.items
-        .map((film) => ({
-          id: film.kinopoiskId,
-          title: film.nameRu || film.nameEn || "",
-          poster: film.posterUrlPreview || "",
-          year: film.year ?? 0,
-          rating: film.ratingKinopoisk ?? null,
-          genres: film.genres?.map((g) => g.genre) ?? [],
-          countries: film.countries?.map((c) => c.country) ?? [],
-        }))
+        .map(mapFilm)
         .filter((film) => film.title && film.poster);
 
       return {
@@ -114,15 +99,7 @@ export const fetchFilteredMovies = createAsyncThunk(
       const data = await requestFilteredMovies(payload);
 
       const mappedMovies = data.items
-        .map((film) => ({
-          id: film.kinopoiskId,
-          title: film.nameRu || film.nameEn || "",
-          poster: film.posterUrlPreview || "",
-          year: film.year ?? 0,
-          rating: film.ratingKinopoisk ?? null,
-          genres: film.genres?.map((g) => g.genre) ?? [],
-          countries: film.countries?.map((c) => c.country) ?? [],
-        }))
+        .map(mapFilm)
         .filter((film) => film.title && film.poster);
 
       return {
@@ -138,24 +115,21 @@ export const fetchFilteredMovies = createAsyncThunk(
 export const fetchFilmActors = createAsyncThunk(
   "movies/fetchFilmActors",
   async (id: number) => {
-    const data = await requestFilmStaff(id);
-    return data;
+    return await requestFilmStaff(id);
   }
 );
 
 export const fetchFilmImages = createAsyncThunk(
   "movies/fetchFilmImages",
   async (id: number) => {
-    const data = await requestFilmImages(id);
-    return data;
+    return await requestFilmImages(id);
   }
 );
 
 export const fetchSimilarMovies = createAsyncThunk(
   "movies/fetchSimilarMovies",
   async (id: number) => {
-    const data = await requestSimilarMovies(id);
-    return data;
+    return await requestSimilarMovies(id);
   }
 );
 
@@ -169,6 +143,7 @@ const initialState: MoviesState = {
   searchResults: [],
   searchTotalPages: 0,
   favorite: JSON.parse(localStorage.getItem("favoriteMovies") || "[]"),
+  favoriteMovies: [],
   filteredMovies: [],
   filteredTotalPages: 0,
   currentFilm: null,
@@ -197,6 +172,7 @@ export const moviesSlice = createSlice({
 
       if (state.favorite.includes(id)) {
         state.favorite = state.favorite.filter((movieId) => movieId !== id);
+        state.favoriteMovies = state.favoriteMovies.filter((m) => m.id !== id);
       } else {
         state.favorite.push(id);
       }
@@ -230,8 +206,24 @@ export const moviesSlice = createSlice({
     });
 
     builder.addCase(fetchMovieById.fulfilled, (state, action) => {
-      state.currentFilm = action.payload;
+      const film = action.payload;
+
+      const mapped = {
+        id: film.kinopoiskId,
+        title: film.nameRu || film.nameEn || "",
+        poster: film.posterUrlPreview || film.posterUrl || "",
+        year: film.year ?? 0,
+        rating: film.ratingKinopoisk ?? null,
+        genres: film.genres?.map(g => g.genre) ?? [],
+        countries: film.countries?.map(c => c.country) ?? [],
+      };
+
+      const exists = state.favoriteMovies.some(m => m.id === mapped.id);
+      if (!exists) state.favoriteMovies.push(mapped);
+
+      state.currentFilm = film; 
     });
+
 
     builder.addCase(fetchSearchMovies.pending, (state) => {
       state.loading = true;

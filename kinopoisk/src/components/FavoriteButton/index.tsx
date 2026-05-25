@@ -7,12 +7,20 @@ export function FavoriteButton({ id }: { id: number }) {
   const favorite = useAppSelector(state => state.movies.favorite)
   const isFavorite = favorite.includes(id)
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    dispatch(toggleFavoriteMovie(id))
+  }
+
   return (
     <button
-      onClick={() => dispatch(toggleFavoriteMovie(id))}
-      className="absolute top-2 right-2 cursor-pointer"
+      onClick={handleClick}
+      className="absolute top-2 right-2 cursor-pointer z-20"
     >
-      {isFavorite ? FavoriteActiveIcon : FavoriteInactiveIcon}
+      <span style={{ pointerEvents: "none" }}>
+        {isFavorite ? FavoriteActiveIcon : FavoriteInactiveIcon}
+      </span>
     </button>
   )
 }

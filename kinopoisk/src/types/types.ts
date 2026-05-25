@@ -32,6 +32,7 @@ export type MoviesState = {
   currentFilmActors: any[]
   currentFilmImages: any[]
   currentFilmSimilar: any[]
+  favoriteMovies: any[]
 }
 
 export interface FilmsResponse {
