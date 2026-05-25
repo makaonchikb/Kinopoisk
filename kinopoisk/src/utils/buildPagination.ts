@@ -1,0 +1,26 @@
+export const buildPagination = (currentPage: number, totalPages: number) => {
+  const pages: (number | string)[] = [];
+
+  pages.push(1);
+
+  if (currentPage > 4) {
+    pages.push("...");
+  }
+
+  const start = Math.max(2, currentPage - 2);
+  const end = Math.min(totalPages - 1, currentPage + 2);
+
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+
+  if (currentPage < totalPages - 3) {
+    pages.push("...");
+  }
+
+  if (totalPages > 1) {
+    pages.push(totalPages);
+  }
+
+  return pages;
+};
